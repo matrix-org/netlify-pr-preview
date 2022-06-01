@@ -27,7 +27,7 @@ inputs:
   deployment_id:
     type: string
     required: false
-    description: The ID of an existing deployment to continue as part of this Netlify deployment, if desired
+    description: The ID of an existing deployment to continue as part of this Netlify deployment, one will be created otherwise
 
   # We cannot use ${{ github.repository_owner }} as in workflow runs from forks it'll be the upstream org
   owner:
