@@ -19,6 +19,15 @@ inputs:
     required: false
     description: The prefix to use before the PR number in the Netlify subdomain
     default: pr
+  deployment_env:
+    type: string
+    required: false
+    description: The Github environment with which to associate this deployment
+    default: Netlify
+  deployment_id:
+    type: string
+    required: false
+    description: The ID of an existing deployment to continue as part of this Netlify deployment, if desired
 
   # We cannot use ${{ github.repository_owner }} as in workflow runs from forks it'll be the upstream org
   owner:
@@ -49,11 +58,12 @@ runs:
   steps:
     - name: 📝 Create Deployment
       uses: bobheadxi/deployments@11bd6447913c3ffeedb5552bcf6890d1668d9732 # v1.2.0
+      if: !inputs.deployment_id
       id: deployment
       with:
         step: start
         token: ${{ github.token }}
-        env: Netlify
+        env: ${{ inputs.deployment_env }}
         ref: ${{ inputs.revision }}
         desc: |
           Do you trust the author of this PR? Maybe this build will steal your keys or give you malware.
@@ -87,7 +97,7 @@ runs:
         override: false
         token: ${{ github.token }}
         status: ${{ job.status }}
-        env: ${{ steps.deployment.outputs.env }}
-        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+        env: ${{ inputs.deployment_env }}
+        deployment_id: ${{ inputs.deployment_id || steps.deployment.outputs.deployment_id }}
         env_url: ${{ steps.netlify.outputs.deploy-url }}
         desc: ${{ inputs.desc }}
