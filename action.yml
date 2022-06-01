@@ -1,0 +1,94 @@
+# Must only be ran from a successful workflow_run caused by a pull_request, if condition e.g.
+# github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request'
+name: Netlify PR Preview
+description: Helper action to deploy PR previews to Netlify.
+inputs:
+  path:
+    type: string
+    required: true
+    description: The path to the directory which should be deployed into Netlify
+  desc:
+    type: string
+    required: false
+    description: The description to set on the Github Deployment
+    default: |
+      Do you trust the author of this PR? Maybe this build will steal your keys or give you malware.
+      Exercise caution. Use test accounts.
+  prefix:
+    type: string
+    required: false
+    description: The prefix to use before the PR number in the Netlify subdomain
+    default: pr
+
+  # We cannot use ${{ github.repository_owner }} as in workflow runs from forks it'll be the upstream org
+  owner:
+    type: string
+    required: true
+    description: The owner (login) of the head repo of the PR
+  # We cannot use ${{ github.ref_name }} as in workflow runs it'll just be the default branch (develop)
+  branch:
+    type: string
+    required: true
+    description: The name of the head branch
+  # We cannot use ${{ github.sha }} here as for pull requests it'll be a simulated merge commit instead
+  revision:
+    type: string
+    required: true
+    description: The git revision with which this deployment should be associated
+
+  token:
+    type: string
+    required: true
+    description: The Netlify Auth Token
+  site_id:
+    type: string
+    required: true
+    description: The Netlify Site ID
+runs:
+  using: composite
+  steps:
+    - name: 📝 Create Deployment
+      uses: bobheadxi/deployments@v1
+      id: deployment
+      with:
+        step: start
+        token: ${{ github.token }}
+        env: Netlify
+        ref: ${{ inputs.revision }}
+        desc: |
+          Do you trust the author of this PR? Maybe this build will steal your keys or give you malware.
+          Exercise caution. Use test accounts.
+
+    - id: prdetails
+      uses: matrix-org/pr-details-action@v1.1
+      with:
+        owner: ${{ inputs.owner }}
+        branch: ${{ inputs.branch }}
+
+    - name: ☁️ Deploy to Netlify
+      id: netlify
+      uses: nwtgck/actions-netlify@v1.2
+      with:
+        publish-dir: ${{ inputs.path }}
+        deploy-message: "Deploy from GitHub Actions"
+        # These don't work because we're in workflow_run
+        enable-pull-request-comment: false
+        enable-commit-comment: false
+        alias: ${{ inputs.prefix }}${{ steps.prdetails.outputs.pr_id }}
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
+        NETLIFY_SITE_ID: ${{ inputs.site_id }}
+      timeout-minutes: 1
+
+    - name: 🚦 Update deployment status
+      uses: bobheadxi/deployments@v1
+      if: always()
+      with:
+        step: finish
+        override: false
+        token: ${{ github.token }}
+        status: ${{ job.status }}
+        env: ${{ steps.deployment.outputs.env }}
+        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+        env_url: ${{ steps.netlify.outputs.deploy-url }}
+        desc: ${{ inputs.desc }}
