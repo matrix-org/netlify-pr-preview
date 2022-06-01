@@ -48,7 +48,7 @@ runs:
   using: composite
   steps:
     - name: 📝 Create Deployment
-      uses: bobheadxi/deployments@v1
+      uses: bobheadxi/deployments@11bd6447913c3ffeedb5552bcf6890d1668d9732 # v1.2.0
       id: deployment
       with:
         step: start
@@ -67,7 +67,7 @@ runs:
 
     - name: ☁️ Deploy to Netlify
       id: netlify
-      uses: nwtgck/actions-netlify@v1.2
+      uses: nwtgck/actions-netlify@f517512ae75beec8896aa7b027c1c72f01816200 # v1.2.2
       with:
         publish-dir: ${{ inputs.path }}
         deploy-message: "Deploy from GitHub Actions"
@@ -80,7 +80,7 @@ runs:
         NETLIFY_SITE_ID: ${{ inputs.site_id }}
 
     - name: 🚦 Update deployment status
-      uses: bobheadxi/deployments@v1
+      uses: bobheadxi/deployments@11bd6447913c3ffeedb5552bcf6890d1668d9732 # v1.2.0
       if: always()
       with:
         step: finish
