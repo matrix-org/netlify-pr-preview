@@ -78,7 +78,6 @@ runs:
       env:
         NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
         NETLIFY_SITE_ID: ${{ inputs.site_id }}
-      timeout-minutes: 1
 
     - name: 🚦 Update deployment status
       uses: bobheadxi/deployments@v1
