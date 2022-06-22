@@ -57,7 +57,7 @@ runs:
   using: composite
   steps:
     - name: 📝 Create Deployment
-      uses: bobheadxi/deployments@11bd6447913c3ffeedb5552bcf6890d1668d9732 # v1.2.0
+      uses: bobheadxi/deployments@9d4477fdaa4120020cd10ab7e97f68c801422e73 # v1.2.0
       if: !inputs.deployment_id
       id: deployment
       with:
@@ -90,7 +90,7 @@ runs:
         NETLIFY_SITE_ID: ${{ inputs.site_id }}
 
     - name: 🚦 Update deployment status
-      uses: bobheadxi/deployments@11bd6447913c3ffeedb5552bcf6890d1668d9732 # v1.2.0
+      uses: bobheadxi/deployments@9d4477fdaa4120020cd10ab7e97f68c801422e73 # v1.2.0
       if: always()
       with:
         step: finish
