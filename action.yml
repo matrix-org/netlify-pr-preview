@@ -77,7 +77,7 @@ runs:
 
     - name: ☁️ Deploy to Netlify
       id: netlify
-      uses: nwtgck/actions-netlify@f517512ae75beec8896aa7b027c1c72f01816200 # v1.2.2
+      uses: nwtgck/actions-netlify@890358d9a790ec9785f457098068495c164dbaea # v1.2.2
       with:
         publish-dir: ${{ inputs.path }}
         deploy-message: "Deploy from GitHub Actions"
