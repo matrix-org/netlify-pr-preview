@@ -58,7 +58,7 @@ runs:
   steps:
     - name: 📝 Create Deployment
       uses: bobheadxi/deployments@11bd6447913c3ffeedb5552bcf6890d1668d9732 # v1.2.0
-      if: inputs.deployment_id == ""
+      if: inputs.deployment_id == ''
       id: deployment
       with:
         step: start
