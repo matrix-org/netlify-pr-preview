@@ -70,7 +70,7 @@ runs:
           Exercise caution. Use test accounts.
 
     - id: prdetails
-      uses: matrix-org/pr-details-action@v1.1
+      uses: matrix-org/pr-details-action@v1.3
       with:
         owner: ${{ inputs.owner }}
         branch: ${{ inputs.branch }}
