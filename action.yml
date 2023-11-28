@@ -71,6 +71,7 @@ runs:
 
     - id: prdetails
       uses: matrix-org/pr-details-action@v1.3
+      continue-on-error: true
       with:
         owner: ${{ inputs.owner }}
         branch: ${{ inputs.branch }}
@@ -84,7 +85,7 @@ runs:
         # These don't work because we're in workflow_run
         enable-pull-request-comment: false
         enable-commit-comment: false
-        alias: ${{ inputs.prefix }}${{ steps.prdetails.outputs.pr_id }}
+        alias: ${{ inputs.prefix }}${{ steps.prdetails.outputs.pr_id || inputs.branch }}
       env:
         NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
         NETLIFY_SITE_ID: ${{ inputs.site_id }}
